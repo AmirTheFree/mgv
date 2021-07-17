@@ -2,15 +2,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final TextEditingController queryController = new TextEditingController();
-  void _search(String text) {
-    print(text);
+  String wait = '';
+  void _search(String text) async {
+    if (text.isNotEmpty) {
+      setState(() {
+        wait = 'Please wait ...';
+      });
+      var url = 'https://en.gravatar.com/' + text + '.json';
+      Response response = await get(Uri.parse(url));
+      var data = json.decode(utf8.decode(response.bodyBytes));
+      // Call the class initialize
+    } else {
+      setState(() {
+        wait = 'Please enter a name';
+      });
+    }
   }
 
   _launchURL(String url) async {
@@ -53,6 +73,15 @@ class MyApp extends StatelessWidget {
                 ),
                 style: ButtonStyle(
                   fixedSize: MaterialStateProperty.all(Size(150, 50)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  wait,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Expanded(
