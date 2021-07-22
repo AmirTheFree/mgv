@@ -1,7 +1,6 @@
 // In the name of Allah
 
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'profile.dart';
 
 void main() {
@@ -10,18 +9,9 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final TextEditingController queryController = new TextEditingController();
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'MWX Gravatar Viewer',
       home: Builder(
         builder: (context) => Scaffold(
@@ -66,7 +56,7 @@ class MyApp extends StatelessWidget {
                             padding: const EdgeInsets.only(right: 10),
                             child: ElevatedButton(
                               onPressed: () =>
-                                  _launchURL('https://mwxgaf.github.io/mgv'),
+                                  launchURL('https://mwxgaf.github.io/mgv'),
                               child: Text(
                                 'About App',
                                 style: TextStyle(
@@ -83,7 +73,7 @@ class MyApp extends StatelessWidget {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () => _launchURL('http://mwxgaf.ir/'),
+                            onPressed: () => launchURL('http://mwxgaf.ir/'),
                             child: Text(
                               'About Developer',
                               style: TextStyle(
