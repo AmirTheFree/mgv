@@ -52,6 +52,18 @@ class _ProfileState extends State<Profile> {
     dataFuture = fetchData(userID: widget.id);
   }
 
+  final infoStyle = TextStyle(
+    fontSize: 15,
+  );
+  final linkStyle = TextStyle(
+    fontSize: 15,
+    color: Colors.blue,
+  );
+  final titleStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+  );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,6 +78,18 @@ class _ProfileState extends State<Profile> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var data = snapshot.data!.information;
+                String email = '❌';
+                try {
+                  email = data['emails'][0]['value'];
+                } catch (e) {}
+                String website = '❌';
+                try {
+                  website = data['urls'][0]['value'];
+                } catch (e) {}
+                String phone = '❌';
+                try {
+                  phone = data['phoneNumbers'][0]['value'];
+                } catch (e) {}
                 profileURL = data['profileUrl'];
                 print(data);
                 return Padding(
@@ -78,7 +102,7 @@ class _ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                data['displayName'],
+                                data['displayName'] ?? '❌',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30,
@@ -94,7 +118,7 @@ class _ProfileState extends State<Profile> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
                                 child: Text(
-                                  data['aboutMe'],
+                                  data['aboutMe'] ?? '❌',
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ),
@@ -111,6 +135,124 @@ class _ProfileState extends State<Profile> {
                       Divider(
                         color: Colors.black54,
                         height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.location_pin),
+                          Text(
+                            'Location: ',
+                            style: titleStyle,
+                          ),
+                          Text(
+                            data['currentLocation'] ?? '❌',
+                            style: infoStyle,
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.person),
+                            Text(
+                              'Full name: ',
+                              style: titleStyle,
+                            ),
+                            Text(
+                              data['name']['formatted'] ?? '❌',
+                              style: infoStyle,
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.email),
+                            Text(
+                              'Email: ',
+                              style: titleStyle,
+                            ),
+                            InkWell(
+                              child: Text(
+                                email,
+                                style: linkStyle,
+                              ),
+                              onTap: () => launchURL('mailto:' + email),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.phone),
+                            Text(
+                              'Phone: ',
+                              style: titleStyle,
+                            ),
+                            InkWell(
+                              child: Text(
+                                phone,
+                                style: linkStyle,
+                              ),
+                              onTap: () => launchURL('tel:' + phone),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.link),
+                            Text(
+                              'Website: ',
+                              style: titleStyle,
+                            ),
+                            InkWell(
+                              child: Text(
+                                website,
+                                style: linkStyle,
+                              ),
+                              onTap: () => launchURL(website),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.perm_identity_outlined),
+                            Text(
+                              'First name: ',
+                              style: titleStyle,
+                            ),
+                            Text(
+                              data['name']['givenName'] ?? '❌',
+                              style: infoStyle,
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
+                            Icon(Icons.perm_identity_outlined),
+                            Text(
+                              'Last name: ',
+                              style: titleStyle,
+                            ),
+                            Text(
+                              data['name']['familyName'] ?? '❌',
+                              style: infoStyle,
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
