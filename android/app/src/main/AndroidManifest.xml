@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ir.mwx.mgv">
    <application
-        android:label="mgv"
-        android:icon="@mipmap/ic_launcher">
+        android:label="MGV"
+        android:icon="@mipmap/logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
