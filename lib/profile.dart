@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mgv/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 launchURL(String url) async {
@@ -90,8 +89,32 @@ class _ProfileState extends State<Profile> {
                 try {
                   phone = data['phoneNumbers'][0]['value'];
                 } catch (e) {}
+                var twitter;
+                try {
+                  for (var account in data['accounts']) {
+                    if (account['shortname'] == 'twitter') {
+                      twitter = account;
+                    }
+                  }
+                } catch (e) {
+                  twitter = {'display': null, 'url': ''};
+                }
+                var currency = {'type': '', 'value': '❌'};
+                try {
+                  currency = data['currency'][0];
+                  currency['type'] = data['currency'][0]['type'] + ': ';
+                } catch (e) {}
                 profileURL = data['profileUrl'];
-                print(data);
+                Map<String, String> name = {
+                  'formatted': '❌',
+                  'givenName': '❌',
+                  'familyName': '❌'
+                };
+                name.forEach((key, value) {
+                  try {
+                    name[key] = data['name'][key];
+                  } catch (e) {}
+                });
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -117,9 +140,13 @@ class _ProfileState extends State<Profile> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: Text(
-                                  data['aboutMe'] ?? '❌',
-                                  style: TextStyle(fontSize: 16),
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width - 100,
+                                  child: Text(
+                                    data['aboutMe'] ?? '❌',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
                                 ),
                               ),
                             ],
@@ -159,7 +186,7 @@ class _ProfileState extends State<Profile> {
                               style: titleStyle,
                             ),
                             Text(
-                              data['name']['formatted'] ?? '❌',
+                              name['formatted']!,
                               style: infoStyle,
                             )
                           ],
@@ -207,6 +234,25 @@ class _ProfileState extends State<Profile> {
                         padding: const EdgeInsets.only(top: 3),
                         child: Row(
                           children: [
+                            Icon(Icons.chat),
+                            Text(
+                              'Twitter: ',
+                              style: titleStyle,
+                            ),
+                            InkWell(
+                              child: Text(
+                                twitter['display'] ?? '❌',
+                                style: linkStyle,
+                              ),
+                              onTap: () => launchURL(twitter['url'] ?? '❌'),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
                             Icon(Icons.link),
                             Text(
                               'Website: ',
@@ -226,13 +272,29 @@ class _ProfileState extends State<Profile> {
                         padding: const EdgeInsets.only(top: 3),
                         child: Row(
                           children: [
+                            Icon(Icons.attach_money),
+                            Text(
+                              currency['type'] ?? '❌',
+                              style: titleStyle,
+                            ),
+                            Text(
+                              currency['value'] ?? '❌',
+                              style: infoStyle,
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Row(
+                          children: [
                             Icon(Icons.perm_identity_outlined),
                             Text(
                               'First name: ',
                               style: titleStyle,
                             ),
                             Text(
-                              data['name']['givenName'] ?? '❌',
+                              name['givenName']!,
                               style: infoStyle,
                             )
                           ],
@@ -248,10 +310,23 @@ class _ProfileState extends State<Profile> {
                               style: titleStyle,
                             ),
                             Text(
-                              data['name']['familyName'] ?? '❌',
+                              name['familyName']!,
                               style: infoStyle,
                             )
                           ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: GridView.count(
+                            crossAxisCount: 4,
+                            children: List.generate(
+                              data['photos'].length,
+                              (int index) =>
+                                  Image.network(data['photos'][index]['value']),
+                            ),
+                          ),
                         ),
                       ),
                     ],
