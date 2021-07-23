@@ -2,7 +2,7 @@
 
 ## Read Peoples Gravatar Profile
 
-**[Description + Download for Android](https://mwxgaf.github.com/mgv)**
+**[Description + Download for Android](https://mwxgaf.github.io/mgv)**
 
 Using this application you can see any Gravatar profile on your phone just by entering the profile ID you want and pressing the search button!
 
